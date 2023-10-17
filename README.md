@@ -1,6 +1,23 @@
-# Getting Started with Create React App
+# Most important thing in React:
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+You have to know, when the component is rendering and re-rendering.
+class, is easier to understand, when component is rendering and re-rendering.
+
+whenever JSX, sees the curly braces {}, it know you want to access JS code. This is so powerful becuse
+it can directly use JS code inside html.
+
+    Inside JSX, REACT allows you to bind and event handlers..
+    /**
+     *  React only update the value, when I know the component is different. --->>> 
+     * ------->>>>>>>   we dont need to copy the reference, instead of that we need to copy the value.
+     * setState: It shallow merge the current object.
+     */
+
+Important Note: Always work on the functionality before going to the styling part.
+
+React re-render in two conditions: 1\
+1. When setState is called 
+2. When props is changed
 
 ## Available Scripts
 
