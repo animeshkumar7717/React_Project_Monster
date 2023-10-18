@@ -1,4 +1,5 @@
-import { Component } from 'react';
+// import { Component } from 'react';
+import { useState, useEffect } from 'react';
 // import logo from './logo.svg';
 // import CardList from './components/card-list/card-list.component';
 import './App.css';
@@ -167,50 +168,153 @@ import SearchBox from './components/search-box/search-box.component';
 //   }
 // }
 
-class App extends Component {  
-  constructor() {
-    super();
-    this.state = {
-      monster: [],
-      searchField: ''
-    }
-  }
 
-  onChange=(event) => {
-    const searchField = event.target.value.toLocaleLowerCase();
-    this.setState(() => {
-      return { searchField }
-    })
+/** This below is the class component */
 
-}
+// class App extends Component {  
+//   constructor() {
+//     super();
+//     this.state = {
+//       monster: [],
+//       searchField: ''
+//     }
+//   }
 
-  componentDidMount() {
+//   onChange=(event) => {
+//     const searchField = event.target.value.toLocaleLowerCase();
+//     this.setState(() => {
+//       return { searchField }
+//     })
+
+// }
+
+//   componentDidMount() {
+//     fetch('https://jsonplaceholder.typicode.com/users') 
+//     .then((res)=> res.json()) 
+//     .then((users) => {
+//       this.setState(()=>{
+//         return {
+//           monster: users
+//         }
+//       })
+//     })
+//   } 
+
+
+//   render() {
+//     const { monster, searchField } = this.state;
+//     const { onChange } = this;
+//     const filterMonsters = monster.filter((monsters) => {
+//       return monsters.name.toLocaleLowerCase().includes(searchField);
+//   })
+//     return (
+//       <div className='App' >
+//         <h1 className='app-title'>Monster App</h1>
+//         <SearchBox className='searchBox' onChangeHandler={onChange}  placeholder='search monster' />
+//         <CardList monster={filterMonsters} />
+//       </div>
+//     )
+//   }
+// }
+
+/** This below is the functional component */
+
+
+const App = () => {
+  const [ searchField, setSearchField ] = useState('');
+  const [ monster, setMonster ] = useState([]);
+  const [ filteredMonster, setFilteredMonster ] = useState(monster);
+
+  /** 
+   * It will create infinite loop of re-render, because it comes from the browser which is different in memory... it will re-render again and again
+   * It will goes to the circular loop.
+   * It re-render over and over again.
+   * 
+   * so, we have to create a side effect in this loop using useEffect hook.
+   * Side Effect: Some behaviour which is affects in the function by something which is out of the scope of that function.
+   * 
+   * useEffect(() => {},    // callback function
+   * []   // different dependency (mostly state values or props value)
+   * )
+  */
+
+    // fetch('https://jsonplaceholder.typicode.com/users') 
+    //   .then((res)=> res.json()) 
+    //   .then((users) => setMonster(users))
+
+  useEffect(()=>{
     fetch('https://jsonplaceholder.typicode.com/users') 
     .then((res)=> res.json()) 
-    .then((users) => {
-      this.setState(()=>{
-        return {
-          monster: users
-        }
-      })
-    })
-  } 
+    .then((users) => setMonster(users))
+  }, [])  // empty arrary, only wants to use this fetch api at the very first time of compoent renders.
 
-
-  render() {
-    const { monster, searchField } = this.state;
-    const { onChange } = this;
-    const filterMonsters = monster.filter((monsters) => {
+  useEffect(() => {
+    const newFilterMonsters = monster.filter((monsters) => {
       return monsters.name.toLocaleLowerCase().includes(searchField);
   })
-    return (
-      <div className='App' >
-        <h1 className='app-title'>Monster App</h1>
-        <SearchBox className='searchBox' onChangeHandler={onChange}  placeholder='search monster' />
-        <CardList monster={filterMonsters} />
-      </div>
-    )
+
+  setFilteredMonster(newFilterMonsters)
+
+  }, [monster, searchField])
+
+  const onChange = (event) => {
+    const searchFieldString = event.target.value.toLocaleLowerCase();
+    setSearchField(searchFieldString);
   }
+
+  return (
+    <div className='App' >
+      <h1 className='app-title'>Monster App</h1>
+      <SearchBox className='searchBox' onChangeHandler={onChange}  placeholder='search monster' />
+      <CardList monster={filteredMonster} />
+    </div>
+  )
 }
+
+// class App extends Component {  
+//   constructor() {
+//     super();
+//     this.state = {
+//       monster: [],
+//       searchField: ''
+//     }
+//   }
+
+//   onChange=(event) => {
+//     const searchField = event.target.value.toLocaleLowerCase();
+//     this.setState(() => {
+//       return { searchField }
+//     })
+
+// }
+
+//   componentDidMount() {
+//     fetch('https://jsonplaceholder.typicode.com/users') 
+//     .then((res)=> res.json()) 
+//     .then((users) => {
+//       this.setState(()=>{
+//         return {
+//           monster: users
+//         }
+//       })
+//     })
+//   } 
+
+
+//   render() {
+//     const { monster, searchField } = this.state;
+//     const { onChange } = this;
+  //   const filterMonsters = monster.filter((monsters) => {
+  //     return monsters.name.toLocaleLowerCase().includes(searchField);
+  // })
+//     return (
+//       <div className='App' >
+//         <h1 className='app-title'>Monster App</h1>
+//         <SearchBox className='searchBox' onChangeHandler={onChange}  placeholder='search monster' />
+//         <CardList monster={filterMonsters} />
+//       </div>
+//     )
+//   }
+// }
 
 export default App;
